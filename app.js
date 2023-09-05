@@ -2,7 +2,7 @@ function playGame () {
     let playerScore = 0;
     let computerScore = 0;
 
-    let numberRounds = prompt("Please enter number of rounds");
+    let numberRounds = parseInt(prompt("Please enter number of rounds"));
     
     let i = 0;
     do {
