@@ -1,0 +1,98 @@
+.header {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content:space-around;
+    background-color: bisque;
+    height: 250px;
+}
+
+/* Base styles */
+body {
+    font-family: 'Arial', sans-serif;
+    background-color: #f7f8fc;
+    padding: 20px;
+}
+
+/* Modern input style */
+.rounds-input {
+    padding: 10px 15px; /* Padding around text */
+    border: none; /* Removing default border */
+    border-radius: 25px; /* Rounded corners */
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); /* Subtle shadow for depth */
+    outline: none; /* Removing default focus outline */
+    font-size: 16px; /* Font size */
+    transition: box-shadow 0.3s ease, transform 0.3s ease; /* Smooth transition for hover and focus effects */
+}
+
+/* Hover effect */
+.rounds-input:hover {
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+/* Focus effect */
+.rounds-input:focus {
+    box-shadow: 0 2px 5px rgba(0, 128, 255, 0.5); /* Blueish shadow for focus */
+    transform: scale(1.02); /* Slightly enlarge the input on focus */
+}
+
+
+
+.main-container {
+    display:flex;
+    justify-content: space-between;
+    align-items: center;
+    height: 600px;
+    font-family: 'Arial', sans-serif; /* Preferably use a modern font */
+    background-color: azure;
+}
+
+.left-container, .right-container  {
+    display: flex;
+    flex-direction: column;
+    width: 150px;
+}
+
+.centre-container  {
+    display: flex;
+    flex-direction: column;
+}
+
+.main-container button {
+    font-size: 16px;
+    letter-spacing: 1px;
+    color: #fff;
+    background-color: #536d86;
+    padding: 24px 24px;
+    border: none;
+    border-radius: 10px;
+    box-shadow: 0 10px 20px rgba(252, 70, 107, 0.2); 
+    transition: all 0.3s ease-in-out;
+    margin-top: 50px;
+    margin-bottom: 50px;
+}
+
+.header button {
+    font-size: 16px;
+    letter-spacing: 1px;
+    color: #fff;
+    background-color: #37c225;
+    padding: 24px 24px;
+    border: none;
+    border-radius: 10px;
+    box-shadow: 0 10px 20px rgba(252, 70, 107, 0.2); 
+    transition: all 0.3s ease-in-out;
+    margin-top: 50px;
+    margin-bottom: 50px;
+}
+
+button:hover {
+    background: #020344;
+    box-shadow: 0 15px 25px rgba(17, 16, 16, 0.3); 
+}
+
+button:active {
+    /* Button press effect */
+    transform: translateY(2px); 
+    box-shadow: 0 5px 15px rgba(252, 70, 107, 0.2); 
+}

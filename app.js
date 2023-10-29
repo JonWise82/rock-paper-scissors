@@ -1,32 +1,36 @@
-function playGame () {
-    let playerScore = 0;
-    let computerScore = 0;
+const centreContainer = document.querySelector('.centre-container');
+const header = document.querySelector('.header');
+const roundNotice = document.querySelector('.rounds');
+let noRounds = document.querySelector('.rounds-input');
 
-    let numberRounds = parseInt(prompt("Please enter number of rounds"));
-    
-    let i = 0;
-    do {
-        let playerChoice = prompt("Please enter your choice of rock, paper or" +
-            " scissors");        
-        playerChoice = playerChoice.toLowerCase();
-        let computerChoice = randomChoice();
-        let result = decideResult(playerChoice, computerChoice);
-        
-        //manage score
-        if (result === "resultComputer") {
-            computerScore += 1;
-        }
-        if (result === "resultPlayer") {
-            playerScore += 1;
-        }
-        console.log("Player " + playerScore + " - " + computerScore + 
-        " Computer");
-        
-        i++;
-    } while (i < numberRounds);
+function checkRoundsInput() {
+    if (noRounds.value === "") {
+        roundNotice.innerText  = "Enter a valid number of rounds";
+        return false;
+    } else {
+        roundNotice.textContent  = "Good luck! Best of " + 
+        noRounds.value + " rounds.";
+        return true;
+    }
+}
 
-    console.log("FINAL SCORE: Player " + playerScore + " - " + computerScore + 
-        " Computer");
+document.addEventListener('click', function(event) {
+
+    if (event.target.classList.contains('selection-button')) {       
+        const buttonText = event.target.textContent.toLowerCase();
+        centreContainer.innerText = 'You selected ' + buttonText + '!';
+    }
+
+    //play game
+    if (event.target.classList.contains('play-game')) {
+        playGame();
+    }
+});
+
+function playGame() {
+    if (checkRoundsInput()) {
+
+    }
 }
 
 function randomChoice () {
@@ -75,3 +79,4 @@ function decideResult (playerChoice, computerChoice) {
             break;
     }
 }
+

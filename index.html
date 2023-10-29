@@ -4,8 +4,31 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
+    <link rel="stylesheet" href="styles.css">
 </head>
-<body>    
+<body>
+    <div class="header">
+        <h1>ROCK, PAPER SCISSORS</h1>
+        <input class="rounds-input" type="number" name="rounds" 
+        placeholder="Enter number of rounds">
+        <button class="play-game" type="button">PLAY GAME</button>
+    </div>
+    <h2 class="rounds"></h2>
+    <div class="main-container">
+        <div class="left-container">
+            <p>Player Choice</p>
+            <button class="selection-button" type="button">Rock</button>
+            <button class="selection-button" type="button">Paper</button>
+            <button class="selection-button" type="button">Scissors</button>
+        </div>
+        <div class="centre-container"></div>
+        <div class="right-container">
+            <p>Computer Choice</p>
+            <button type="button">Rock</button>
+            <button type="button">Paper</button>
+            <button type="button">Scissors</button>
+        </div>
+    </div>
     <script src="app.js"></script>
 </body>
 </html>
