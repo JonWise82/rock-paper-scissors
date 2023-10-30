@@ -10,10 +10,38 @@ const computerChoiceContainer = document.querySelector('.computer-choice');
 
 document.addEventListener('click', function(event) {
 
-    if (event.target.classList.contains('selection-button')) {      
-        let playerChoice = logPlayerChoice(event);
-        let computerChoice = decideAndlogComputerChoice();
-        decideAndLogResult(playerChoice, computerChoice);
+    if (event.target.classList.contains('selection-button')) {
+        let numberRounds = noRounds.value;
+        let playerScore = 0;
+        let computerScore = 0; 
+        let i = 0;    
+        
+        if (numberRounds === "") {
+            playerScoreContainer.innerText = "Enter a valid number of rounds";
+        
+        } else {
+
+            do {
+                let playerChoice = logPlayerChoice(event);
+                let computerChoice = decideAndlogComputerChoice();
+                let result = decideResult(playerChoice, computerChoice);
+                logResult(result);   
+                
+                //manage score
+                if (result === "defeat") {
+                    computerScore += 1;                    
+                    computerScoreContainer.innerText = computerScore;
+                }
+                if (result === "win") {
+                    playerScore += 1;
+                    playerScoreContainer.innerText = playerScore;
+                }
+                
+                i++;
+            
+            } while (i < numberRounds);
+
+        }
     }
 
     //start game
@@ -24,34 +52,37 @@ document.addEventListener('click', function(event) {
 
 function startGame() {
     if (checkRoundsInput()) {
+
         let numberRounds = noRounds.value;
+        roundNotice.textContent  = `Good luck! First to ${numberRounds} wins!`;
         let playerScore = 0;
         let computerScore = 0;
-
         playerScoreContainer.innerText = playerScore;
         computerScoreContainer.innerText = computerScore;
+        return numberRounds  
+    
+    } else {        
+        roundNotice.innerText  = "Enter a valid number of rounds";
     }
 }
 
 function checkRoundsInput() {
-    if (noRounds.value === "") {
-        roundNotice.innerText  = "Enter a valid number of rounds";
+    if (noRounds.value === "") {        
         return false;
-    } else {
-        roundNotice.textContent  = `Good luck! Best of ${noRounds.value} rounds.`;
+    } else {        
         return true;
     }
 }
 
 function logPlayerChoice(event) {
     let playerChoice = event.target.textContent.toLowerCase();
-    playerChoiceContainer.innerText = `You selected ${playerChoice}!`;
+    playerChoiceContainer.innerText = `You selected ${playerChoice}...`;
     return playerChoice;
 }
 
 function decideAndlogComputerChoice() {
     let computerChoice = randomChoice();
-    computerChoiceContainer.innerText = `Computer selected ${computerChoice}!`;
+    computerChoiceContainer.innerText = `Computer selected ${computerChoice}...`;
     return computerChoice;
 }
 
@@ -61,71 +92,39 @@ function randomChoice () {
     return possibleChoices[randomIndex];
 }
 
-function decideAndLogResult (playerChoice, computerChoice) {
+function decideResult (playerChoice, computerChoice) {
+    //draw case
     if (playerChoice === computerChoice) {
-        resultContainer.innerText = "DRAW!";
+        resultContainer.innerText = "draw";
+        return "draw"
     }
-
     
     switch (playerChoice) {
         case "rock":
-            if (computerChoice === "Rock") {
-                resultContainer.innerText = "DRAW!";
-                return "resultDraw";
-            } else if (computerChoice === "Paper") {
-                resultContainer.innerText = "LOST!";
-                return "resultComputer";
-            } else if (computerChoice === "Scissors") {
-                resultContainer.innerText = "WIN!";
-                return "resultPlayer";
+            if (computerChoice === "paper") {
+                return "defeat";
+            } else if (computerChoice === "scissors") {
+                return "win";
             }
             break;
         case "scissors":
-            if (computerChoice === "Rock") {
-                resultContainer.innerText = "LOST!";
-                return "resultComputer";
-            } else if (computerChoice === "Paper") {
-                resultContainer.innerText = "WIN!";
-                return "resultPlayer";
-            } else if (computerChoice === "Scissors") {
-                resultContainer.innerText = "DRAW!";
-                return "resultDraw";
+            if (computerChoice === "rock") {
+                return "defeat";
+            } else if (computerChoice === "paper") {
+                return "win";
             }
             break;
         case "paper":
-            if (computerChoice === "Rock") {
-                resultContainer.innerText = "WIN!";
-                return "resultPlayer";
-            } else if (computerChoice === "Paper") {
-                resultContainer.innerText = "DRAW!";
-                return "resultDraw";
-            } else if (computerChoice === "Scissors") {
-                resultContainer.innerText = "LOST!";
-                return "resultComputer";
+            if (computerChoice === "rock") {
+                return "win";
+            } else if (computerChoice === "scissors") {
+                return "defeat";
             }
             break;
     }
 }
-    /*let i = 0;
-        do {
-            let playerChoice = prompt("Please enter your choice of rock, paper or" +
-                " scissors");        
-            playerChoice = playerChoice.toLowerCase();
-            let computerChoice = randomChoice();
-            let result = decideResult(playerChoice, computerChoice);
-            
-            //manage score
-            if (result === "resultComputer") {
-                computerScore += 1;
-            }
-            if (result === "resultPlayer") {
-                playerScore += 1;
-            }
-            console.log("Player " + playerScore + " - " + computerScore + 
-            " Computer");
-            
-            i++;
-        } while (i < numberRounds);
 
-        console.log("FINAL SCORE: Player " + playerScore + " - " + computerScore + 
-            " Computer"); */
+function logResult(result) {
+    resultContainer.innerText = `It's a ${result}!`;
+
+}
