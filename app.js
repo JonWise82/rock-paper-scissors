@@ -1,149 +1,163 @@
-const centreContainer = document.querySelector('.centre-container');
-const header = document.querySelector('.header');
-const roundNotice = document.querySelector('.rounds');
-const noRounds = document.querySelector('.rounds-input');
-const playerScoreContainer = document.querySelector('.player-score');
-const computerScoreContainer = document.querySelector('.computer-score');
-const resultContainer = document.querySelector('.result');
-const playerChoiceContainer = document.querySelector('.player-choice');
-const computerChoiceContainer = document.querySelector('.computer-choice');
-const roundsRemaining = document.querySelector('.rounds-remaining');
+// Define constants for repeated string values
+const RESULTS = {
+    WIN: "WIN!",
+    DEFEAT: "DEFEAT!",
+    DRAW: "DRAW!",
+  };
+
+const CHOICES = ["rock", "paper", "scissors"];
+
+// Function to get DOM elements
+function getDomElements() {
+    return {
+        centreContainer: document.querySelector('.centre-container'),
+        header: document.querySelector('.header'),
+        roundNotice: document.querySelector('.rounds'),
+        noRounds: document.querySelector('.rounds-input'),
+        playerScoreContainer: document.querySelector('.player-score'),
+        computerScoreContainer: document.querySelector('.computer-score'),
+        resultContainer: document.querySelector('.result'),
+        playerChoiceContainer: document.querySelector('.player-choice'),
+        computerChoiceContainer: document.querySelector('.computer-choice'),
+        roundsRemaining: document.querySelector('.rounds-remaining'),
+    };
+}
+  
+// Store all elements in a variable
+const dom = getDomElements();
+
 let roundsClicked = 0;
 let playerScore = 0;
 let computerScore = 0;
 let numberRounds = 0;
 
-document.addEventListener('click', function(event) {
+// Event delegation on the container
+document.body.addEventListener('click', handleContainerClick);
 
-    //start game
+function handleContainerClick(event) {
     if (event.target.classList.contains('play-game')) {
-        checkAndLogNoRounds();
-        resetGlobalVariables();
-    }
-
-    if (event.target.classList.contains('selection-button')) {
-        roundsClicked++        
-        if (roundsClicked < numberRounds) {
-            let result = runRoundAndReturnResult(event);
-            manageScore(result);
-                
-        } else if (roundsClicked === numberRounds) {
-            let result = runRoundAndReturnResult(event);
-            manageScore(result)
-            logFinalResult();
-     
-        } else if (roundsClicked > numberRounds) {
-            roundNotice.innerText  = "Please restart the game.";
-        }
-    }   
-});
-
-function checkAndLogNoRounds() {    
-    numberRounds = +noRounds.value;
-    if (numberRounds === "") {
-        roundNotice.innerText  = "Enter a valid number of rounds";
-    } else {        
-        roundNotice.textContent  = `Good luck! Best of ${numberRounds} rounds!`;
+        startGame();
+    } else if (event.target.classList.contains('selection-button')) {
+        playRound(event);
     }
 }
 
-function resetGlobalVariables () {
-    playerScore = 0;
-    computerScore = 0;
-    playerScoreContainer.innerText = playerScore;
-    computerScoreContainer.innerText = computerScore;
-    playerChoiceContainer.innerText = "";
-    computerChoiceContainer.innerText = "";
-    resultContainer.innerText = "";
-    roundsRemaining.innerText = "";
-    roundsClicked = 0;
-} 
+function startGame() {
+    if (validateAndSetRounds()) {
+        resetGame();
+    }
+}
 
-
-function checkRoundsInput() {
-    if (noRounds.value === "") {        
+function validateAndSetRounds() {    
+    numberRounds = +dom.noRounds.value;
+    if (numberRounds === "") {
+        dom.roundNotice.innerText  = "Enter a valid number of rounds";
         return false;
     } else {        
+        dom.roundNotice.textContent  = `Good luck! Best of ${numberRounds} rounds!`;
         return true;
     }
 }
 
-function runRoundAndReturnResult (event) {    
+function resetGame () {
+    playerScore = 0;
+    computerScore = 0;
+    dom.playerScoreContainer.innerText = playerScore;
+    dom.computerScoreContainer.innerText = computerScore;
+    dom.playerChoiceContainer.innerText = "";
+    dom.computerChoiceContainer.innerText = "";
+    dom.resultContainer.innerText = "";
+    dom.roundsRemaining.innerText = "";
+    roundsClicked = 0;
+}
+
+function playRound(event) {
+    roundsClicked++;
+    if (roundsClicked <= numberRounds) {
+        const result = runRound(event.target.textContent.toLowerCase());
+        updateScores(result);
+    if (roundsClicked === numberRounds) {
+        endGame();
+    }
+    } else {
+      dom.roundNotice.innerText = "Please restart the game.";
+    }
+}
+
+function runRound (event) {    
     //get and log player choice
-    let playerChoice = event.target.textContent.toLowerCase();
-    playerChoiceContainer.innerText = `You selected ${playerChoice}...`;
+    const playerChoice = event;
+    dom.playerChoiceContainer.innerText = `You selected ${playerChoice}...`;
 
     //choose and log computer choice
-    const possibleChoices = ["rock", "paper", "scissors"];
     const randomIndex = Math.floor(Math.random() * 3);
-    const computerChoice = possibleChoices[randomIndex];    
-    computerChoiceContainer.innerText = `Computer selected ${computerChoice}...`;
+    const computerChoice = CHOICES[randomIndex];    
+    dom.computerChoiceContainer.innerText = `Computer selected ${computerChoice}...`;
     
     const result = decideResult(playerChoice, computerChoice);
     return result;
 }
 
+
 function decideResult (playerChoice, computerChoice) {
     //draw case
     if (playerChoice === computerChoice) {
-        resultContainer.innerText = "DRAW!";
-        return "draw"
+        dom.resultContainer.innerText = RESULTS.DRAW;
+        return RESULTS.DRAW
     }
     
     switch (playerChoice) {
         case "rock":
             if (computerChoice === "paper") {                
-                resultContainer.innerText = "DEFEAT!";
-                return "defeat";
+                dom.resultContainer.innerText = RESULTS.DEFEAT;
+                return RESULTS.DEFEAT;
             } else if (computerChoice === "scissors") {                
-                resultContainer.innerText = "WIN!";
-                return "win";
+                dom.resultContainer.innerText = RESULTS.WIN;
+                return RESULTS.WIN;
             }
             break;
         case "scissors":
             if (computerChoice === "rock") {                
-                resultContainer.innerText = "DEFEAT!";
-                return "defeat";
+                dom.resultContainer.innerText = RESULTS.DEFEAT;
+                return RESULTS.DEFEAT;
             } else if (computerChoice === "paper") {                
-                resultContainer.innerText = "WIN!";
-                return "win";
+                dom.resultContainer.innerText = RESULTS.WIN;
+                return RESULTS.WIN;
             }
             break;
         case "paper":
             if (computerChoice === "rock") {
-                resultContainer.innerText = "WIN!";
-                return "win";                
+                dom.resultContainer.innerText = RESULTS.WIN;
+                return RESULTS.WIN;                
             } else if (computerChoice === "scissors") {
-                resultContainer.innerText = "DEFEAT!";
-                return "defeat";                
+                dom.resultContainer.innerText = RESULTS.DEFEAT;
+                return RESULTS.DEFEAT;                
             }
             break;
     }
 }
 
-function manageScore(result) {
-    if (result === "defeat") {
-        computerScore += 1;                    
-        computerScoreContainer.innerText = computerScore;
+function updateScores(result) {
+    if (result === RESULTS.DEFEAT) {
+        computerScore++;                    
+        dom.computerScoreContainer.innerText = computerScore;
     }
-    if (result === "win") {
-        playerScore += 1;
-        playerScoreContainer.innerText = playerScore;
+    if (result === RESULTS.WIN) {
+        playerScore++;
+        dom.playerScoreContainer.innerText = playerScore;
     }
 
-    roundsRemaining.innerText = `There are ${numberRounds - roundsClicked} rounds remaining`;
+    dom.roundsRemaining.innerText = `There are ${numberRounds - roundsClicked} rounds remaining`;
 }
 
-
-function logFinalResult () {
-    if (playerScore > computerScore) {
-        roundNotice.innerText  = "YOU WIN! WELL DONE";
-    } else if (computerScore > playerScore) {
-        roundNotice.innerText  = "YOU LOSE! TRY AGAIN";
-    } else {
-        roundNotice.innerText  = "IT'S A DRAW! TRY AGAIN";
-    }  
-} 
+function endGame() {
+    const finalMessage = playerScore > computerScore
+      ? "YOU WIN! WELL DONE"
+      : computerScore > playerScore
+      ? "YOU LOSE! TRY AGAIN"
+      : "IT'S A DRAW! TRY AGAIN";
+    dom.roundNotice.innerText = finalMessage;
+  }
 
 
 
