@@ -44,7 +44,7 @@ body {
 }
 
 .score {
-    height: 150px;
+    height: 100px;
     display: flex;
     justify-content:space-between;
 }
@@ -107,3 +107,7 @@ button:active {
     transform: translateY(2px); 
     box-shadow: 0 5px 15px rgba(252, 70, 107, 0.2); 
 }
+
+.rounds-remaining {
+    text-align: center;
+  }
