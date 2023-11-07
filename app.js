@@ -49,9 +49,9 @@ function startGame() {
 }
 
 function validateAndSetRounds() {    
-    numberRounds = +dom.noRounds.value;
-    if (numberRounds === "") {
-        dom.roundNotice.innerText  = "Enter a valid number of rounds";
+    numberRounds = Number(dom.noRounds.value);
+    if (Number.isNaN(numberRounds) || numberRounds <= 0) {
+        dom.roundNotice.textContent  = "Enter a valid number of rounds";
         return false;
     } else {        
         dom.roundNotice.textContent  = `Good luck! Best of ${numberRounds} rounds!`;
@@ -62,12 +62,12 @@ function validateAndSetRounds() {
 function resetGame () {
     playerScore = 0;
     computerScore = 0;
-    dom.playerScoreContainer.innerText = playerScore;
-    dom.computerScoreContainer.innerText = computerScore;
-    dom.playerChoiceContainer.innerText = "";
-    dom.computerChoiceContainer.innerText = "";
-    dom.resultContainer.innerText = "";
-    dom.roundsRemaining.innerText = "";
+    dom.playerScoreContainer.textContent = playerScore;
+    dom.computerScoreContainer.textContent = computerScore;
+    dom.playerChoiceContainer.textContent = "";
+    dom.computerChoiceContainer.textContent = "";
+    dom.resultContainer.textContent = "";
+    dom.roundsRemaining.textContent = "";
     roundsClicked = 0;
 }
 
@@ -158,9 +158,3 @@ function endGame() {
       : "IT'S A DRAW! TRY AGAIN";
     dom.roundNotice.innerText = finalMessage;
   }
-
-
-
-
-
-
