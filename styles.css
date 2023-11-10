@@ -36,7 +36,7 @@ body {
     transform: scale(1.02); /* Slightly enlarge the input on focus */
 }
 
-.rounds {
+.notice {
     background-color: rgb(210, 221, 162);
     height: 50px;
     font-size: 16px;
