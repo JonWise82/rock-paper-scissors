@@ -131,7 +131,7 @@ function updateDOM(roundData) {
     if (roundData.result!== undefined) {
         dom.resultContainer.textContent = roundData.result;
     }
-    if (roundData.numberRounds!== undefined) {
+    if (roundData.numberRounds !== undefined) {
         dom.roundsRemaining.textContent = +roundData.numberRounds - +roundData.roundsClicked;
     } else if (roundData.roundsClicked !== undefined) {
         dom.roundsRemaining.textContent = +roundData.numberRounds - +roundData.roundsClicked;
