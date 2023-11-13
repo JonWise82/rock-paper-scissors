@@ -1,21 +1,43 @@
-// Function to get DOM elements
-function getDomElements() {
-    return {
-        notice: document.querySelector('.notice'),
-        inputRounds: document.querySelector('.rounds-input'),
-        playerScoreContainer: document.querySelector('.player-score'),
-        computerScoreContainer: document.querySelector('.computer-score'),
-        resultContainer: document.querySelector('.result'),
-        playerChoiceContainer: document.querySelector('.player-choice'),
-        computerChoiceContainer: document.querySelector('.computer-choice'),
-        roundsRemaining: document.querySelector('.rounds-remaining'),
-    };
+//View
+const domObject = {
+    notice: document.querySelector('.notice'),
+    inputRounds: document.querySelector('.rounds-input'),
+    playerScoreContainer: document.querySelector('.player-score'),
+    computerScoreContainer: document.querySelector('.computer-score'),
+    resultContainer: document.querySelector('.result'),
+    playerChoiceContainer: document.querySelector('.player-choice'),
+    computerChoiceContainer: document.querySelector('.computer-choice'),
+    roundsRemaining: document.querySelector('.rounds-remaining') 
+
+    //Render onto dom
+    updateDOM(roundData) {  
+        if (roundData.playerScore !== undefined) {
+            this.playerScoreContainer.textContent = roundData.playerScore;
+        } 
+        if (roundData.computerScore !== undefined) {
+            this.computerScoreContainer.textContent = roundData.computerScore;
+        }
+        if (roundData.playerChoice !== undefined) {
+            this.playerChoiceContainer.textContent = roundData.playerChoice;
+        }
+        if (roundData.computerChoice !== undefined) {
+            this.computerChoiceContainer.textContent = roundData.computerChoice;
+        }
+        if (roundData.result!== undefined) {
+            this.resultContainer.textContent = roundData.result;
+        }
+        if (roundData.numberRounds !== undefined) {
+            this.roundsRemaining.textContent = +roundData.numberRounds - +roundData.roundsClicked;
+        } else if (roundData.roundsClicked !== undefined) {
+            this.roundsRemaining.textContent = +roundData.numberRounds - +roundData.roundsClicked;
+        }
+        if (roundData.notice!== undefined) {
+            this.notice.textContent = roundData.notice;
+        }
+    }
 }
 
-// Store all elements in a variable
-const dom = getDomElements();
-
-//Game logic
+//Model (game logic)
 const game = {
     playerScore: 0,
     computerScore: 0,
@@ -47,7 +69,6 @@ const game = {
         };
     },
     playRound(playerChoice) {
-        this.roundsClicked++;
         const computerChoice = this.CHOICES[Math.floor(Math.random() * 3)];       
         const result = this.decideResult(playerChoice, computerChoice);
         if (result === this.RESULTS.WIN) {
@@ -63,6 +84,7 @@ const game = {
             computerChoice: computerChoice, 
             playerScore: this.playerScore, 
             computerScore: this.computerScore,
+            numberRounds: this.numberRounds,
             roundsClicked: this.roundsClicked,
             notice: this.notice
         };
@@ -113,41 +135,15 @@ const game = {
     }
 }
 
-// DOM renderer
-function updateDOM(roundData) {  
-    //check if object property is provided for dom update
-    if (roundData.playerScore !== undefined) {
-        dom.playerScoreContainer.textContent = roundData.playerScore;
-    } 
-    if (roundData.computerScore !== undefined) {
-        dom.computerScoreContainer.textContent = roundData.computerScore;
-    }
-    if (roundData.playerChoice !== undefined) {
-        dom.playerChoiceContainer.textContent = roundData.playerChoice;
-    }
-    if (roundData.computerChoice !== undefined) {
-        dom.computerChoiceContainer.textContent = roundData.computerChoice;
-    }
-    if (roundData.result!== undefined) {
-        dom.resultContainer.textContent = roundData.result;
-    }
-    if (roundData.numberRounds !== undefined) {
-        dom.roundsRemaining.textContent = +roundData.numberRounds - +roundData.roundsClicked;
-    } else if (roundData.roundsClicked !== undefined) {
-        dom.roundsRemaining.textContent = +roundData.numberRounds - +roundData.roundsClicked;
-    }
-    if (roundData.notice!== undefined) {
-        dom.notice.textContent = roundData.notice;
-    }
-}
-
-// Event listeners
+//Controller
 document.body.addEventListener('click', function (event) {
+    const dom = domObject;
     if (event.target.matches('.play-game')) {
         const numberRounds = +dom.inputRounds.value;
         const roundData = game.resetGame(numberRounds);
         updateDOM(roundData); // Render the reset state
     } else if (event.target.matches('.selection-button')) {
+        game.roundsClicked++;
         if (game.roundsClicked <= game.numberRounds) {
             const playerChoice = event.target.textContent.toLowerCase(); 
             const roundData = game.playRound(playerChoice);
