@@ -1,42 +1,3 @@
-//View
-const domObject = {
-    notice: document.querySelector('.notice'),
-    inputRounds: document.querySelector('.rounds-input'),
-    playerScoreContainer: document.querySelector('.player-score'),
-    computerScoreContainer: document.querySelector('.computer-score'),
-    resultContainer: document.querySelector('.result'),
-    playerChoiceContainer: document.querySelector('.player-choice'),
-    computerChoiceContainer: document.querySelector('.computer-choice'),
-    roundsRemaining: document.querySelector('.rounds-remaining') 
-
-    //Render onto dom
-    updateDOM(roundData) {  
-        if (roundData.playerScore !== undefined) {
-            this.playerScoreContainer.textContent = roundData.playerScore;
-        } 
-        if (roundData.computerScore !== undefined) {
-            this.computerScoreContainer.textContent = roundData.computerScore;
-        }
-        if (roundData.playerChoice !== undefined) {
-            this.playerChoiceContainer.textContent = roundData.playerChoice;
-        }
-        if (roundData.computerChoice !== undefined) {
-            this.computerChoiceContainer.textContent = roundData.computerChoice;
-        }
-        if (roundData.result!== undefined) {
-            this.resultContainer.textContent = roundData.result;
-        }
-        if (roundData.numberRounds !== undefined) {
-            this.roundsRemaining.textContent = +roundData.numberRounds - +roundData.roundsClicked;
-        } else if (roundData.roundsClicked !== undefined) {
-            this.roundsRemaining.textContent = +roundData.numberRounds - +roundData.roundsClicked;
-        }
-        if (roundData.notice!== undefined) {
-            this.notice.textContent = roundData.notice;
-        }
-    }
-}
-
 //Model (game logic)
 const game = {
     playerScore: 0,
@@ -56,12 +17,11 @@ const game = {
         this.roundsClicked = 0;
         this.numberRounds = numberRounds;
         this.notice = `Good luck, best of ${this.numberRounds} rounds`;
-        
         return { 
-            result: "", 
-            playerChoice: "", 
+            result: "",
+            playerChoice: "",
             computerChoice: "",
-            playerScore: this.playerScore, 
+            playerScore: this.playerScore,
             computerScore: this.computerScore,
             numberRounds: this.numberRounds,
             roundsClicked: this.roundsClicked,
@@ -77,6 +37,8 @@ const game = {
         } else if (result === this.RESULTS.DEFEAT) {
             this.computerScore++;
             this.notice = "Unlucky. You lost the round.";
+        } else if (result === this.RESULTS.DRAW) {
+            this.notice = "Draw. No points awarded."
         }
         return { 
             result: result, 
@@ -99,38 +61,89 @@ const game = {
                 if (computerChoice === "paper") {                
                     return this.RESULTS.DEFEAT;
                 } else if (computerChoice === "scissors") {                
-                    dom.resultContainer.innerText = this.RESULTS.WIN;
                     return this.RESULTS.WIN;
                 }
                 break;
             case "scissors":
                 if (computerChoice === "rock") {                
-                    dom.resultContainer.innerText = this.RESULTS.DEFEAT;
-                    returnthis.RESULTS.DEFEAT;
+                    return this.RESULTS.DEFEAT;
                 } else if (computerChoice === "paper") {                
-                    dom.resultContainer.innerText = RESULTS.WIN;
                     return this.RESULTS.WIN;
                 }
                 break;
             case "paper":
                 if (computerChoice === "rock") {
-                    dom.resultContainer.innerText = this.RESULTS.WIN;
                     return this.RESULTS.WIN;                
                 } else if (computerChoice === "scissors") {
-                    dom.resultContainer.innerText = this.RESULTS.DEFEAT;
                     return this.RESULTS.DEFEAT;                
                 }
                 break;
         }
     },
     endGame() {
-        this.result = this.playerScore > this.computerScore
-          ? "YOU WIN! WELL DONE"
-          : this.computerScore > this.playerScore
-          ? "YOU LOSE! TRY AGAIN"
-          : "IT'S A DRAW! TRY AGAIN";
+        if (this.playerScore > this.computerScore) {
+            this.notice = "Congratulations! YOU WIN THE GAME!";
+        } else if (this.computerScore > this.playerScore) {
+            this.notice = "Game Over! YOU LOSE. Try again!";
+        } else {
+            this.notice = "It's a DRAW! Well played!";
+        }
         return {
-            result: this.result
+            notice: this.notice,
+            endOfGame: true // Flag to indicate the game has ended
+        }
+    }
+}
+
+//View
+const domObject = {
+    notice: document.querySelector('.notice'),
+    inputRounds: document.querySelector('.rounds-input'),
+    playerScoreContainer: document.querySelector('.player-score'),
+    computerScoreContainer: document.querySelector('.computer-score'),
+    resultContainer: document.querySelector('.result'),
+    playerChoiceContainer: document.querySelector('.player-choice'),
+    computerChoiceContainer: document.querySelector('.computer-choice'),
+    roundsRemaining: document.querySelector('.rounds-remaining'),
+
+    //Render onto dom
+    updateDOM(roundData) {  
+        if (roundData.playerScore !== undefined) {
+            this.playerScoreContainer.textContent = roundData.playerScore;
+        } 
+        if (roundData.computerScore !== undefined) {
+            this.computerScoreContainer.textContent = roundData.computerScore;
+        }
+        if (roundData.playerChoice !== undefined) {
+            if (roundData.roundsClicked !== 0) {
+                this.playerChoiceContainer.textContent = 
+                `You chose ${roundData.playerChoice}...`;
+            } else {
+                this.playerChoiceContainer.textContent = 
+                `Make your choice...`;
+            }
+        }
+        if (roundData.computerChoice !== undefined) {
+            if (roundData.roundsClicked !== 0) {
+                this.computerChoiceContainer.textContent = 
+                `Computer chose ${roundData.computerChoice}...`;
+            } else {
+                this.computerChoiceContainer.textContent = 
+                `Computer waiting for you to play...`;
+            }
+        }
+        if (roundData.numberRounds !== undefined) {
+            this.roundsRemaining.textContent = 
+            `There are ${+roundData.numberRounds - +roundData.roundsClicked} rounds remaining`;
+        } else if (roundData.roundsClicked !== undefined) {
+            this.roundsRemaining.textContent = 
+            `There are ${+roundData.numberRounds - +roundData.roundsClicked} rounds remaining`;
+        }
+        if (roundData.notice!== undefined) {
+            this.notice.textContent = roundData.notice;
+        }
+        if (roundData.endOfGame) {
+            this.notice.textContent = roundData.notice;
         }
     }
 }
@@ -139,25 +152,30 @@ const game = {
 document.body.addEventListener('click', function (event) {
     const dom = domObject;
     if (event.target.matches('.play-game')) {
-        const numberRounds = +dom.inputRounds.value;
-        const roundData = game.resetGame(numberRounds);
-        updateDOM(roundData); // Render the reset state
+        if (Number.isInteger(+dom.inputRounds.value) 
+        && +dom.inputRounds.value > 0) {
+            const numberRounds = +dom.inputRounds.value;
+            const roundData = game.resetGame(numberRounds);
+            dom.updateDOM(roundData); // Render the reset state
+        } else {
+            dom.updateDOM({notice: "Please enter valid number of rounds"}) 
+        }
     } else if (event.target.matches('.selection-button')) {
         game.roundsClicked++;
         if (game.roundsClicked <= game.numberRounds) {
             const playerChoice = event.target.textContent.toLowerCase(); 
             const roundData = game.playRound(playerChoice);
-            updateDOM(roundData);
+            dom.updateDOM(roundData);
         }
         if (game.roundsClicked === game.numberRounds) {
             const finalMessage = game.endGame();
-            updateDOM(finalMessage);
+            dom.updateDOM(finalMessage);
         }
         if (game.roundsClicked > game.numberRounds) {
             const restartMessage = {
                 notice: "Game complete, please start another set."
             }
-            updateDOM(restartMessage);
+            dom.updateDOM(restartMessage);
         }
     }   
 })    
